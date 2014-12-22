@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter;
 
 import android.widget.ListView;
 
+import com.ahuralab.farsialphabet.StatsProxy;
 
 /**
  * @author michele.sama@gmail.com
@@ -38,12 +39,18 @@ public class MainActivity extends Activity {
 	private CharSequence mTitle;
 	private String[] mPlanetTitles;
 
+	private StatsProxy stats;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		ListView list = (ListView) findViewById(R.id.letterList);
 		list.setAdapter(new LetterListAdapter(this));
+
+		if (stats == null) {
+			stats = new StatsProxy(getApplicationContext());
+		}
 
 		mTitle = mDrawerTitle = getTitle();
 		mPlanetTitles = getResources().getStringArray(R.array.planets_array);
@@ -197,7 +204,7 @@ public class MainActivity extends Activity {
 			startActivity(intent);
 			return true;
 		}
-		
+
 		default: {
 			return super.onOptionsItemSelected(item);
 		}
@@ -257,6 +264,19 @@ public class MainActivity extends Activity {
 		super.onConfigurationChanged(newConfig);
 		// Pass any configuration change to the drawer toggls
 		// mDrawerToggle.onConfigurationChanged(newConfig);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		stats.onPause();
+
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		stats.onResume();
 	}
 
 	protected void showDialog(String message, String title) {
